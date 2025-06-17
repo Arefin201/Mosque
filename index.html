@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Noor Mosque | Islamic Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-green: #0a5f38;
+            --accent-gold: #d4af37;
+            --light-green: #e6f2ed;
+            --dark-green: #07492a;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f9fafb;
+        }
+
+        .arabic {
+            font-family: 'Amiri', serif;
+        }
+
+        .hero-bg {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(21, 128, 61, 0.9) 100%);
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('11.jpg') center/cover no-repeat;
+            opacity: 0.3;
+            /* Adjust this value as needed */
+            z-index: -1;
+        }
+
+
+        .prayer-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .prayer-active {
+            background-color: var(--accent-gold);
+            color: white;
+        }
+
+        .donate-btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(212, 175, 55, 0.4), 0 4px 6px -2px rgba(212, 175, 55, 0.2);
+        }
+
+        .islamic-pattern {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="%23d4af37" stroke-width="0.5" opacity="0.1"/><path d="M50,0 C77.61,0 100,22.39 100,50 C100,77.61 77.61,100 50,100 C22.39,100 0,77.61 0,50 C0,22.39 22.39,0 50,0 Z" fill="none" stroke="%23d4af37" stroke-width="0.5" opacity="0.1"/></svg>');
+            background-size: 150px;
+        }
+
+        .gallery-item {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
+        }
+
+        .news-ticker {
+            animation: ticker 20s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .hover-glow:hover {
+            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.7));
+        }
+
+        .minaret-decoration {
+            position: relative;
+        }
+
+        .minaret-decoration::after {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 30px;
+            background-color: var(--accent-gold);
+            border-radius: 4px;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .donor-scroll-container {
+                height: 40vh !important;
+            }
+
+            .donation-breakdown {
+                grid-template-columns: 1fr !important;
+            }
+
+            .total-amount {
+                font-size: 2rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .donor-scroll-container {
+                height: 35vh !important;
+            }
+        }
+
+        .donor-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(10, 95, 56, 0.2);
+        }
+
+        .donor-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .gold-border {
+            position: relative;
+        }
+
+        .gold-border::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-gold);
+            border-radius: 2px;
+        }
+
+        /* Scroll animation for donor list */
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        .animate-scrollUp {
+            animation: scrollUp 30s linear infinite;
+        }
+
+        /* Pause animation on hover */
+        .donor-scroll-container:hover .animate-scrollUp {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white shadow-md z-50 minaret-decoration">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div
+                            class="h-10 w-10 rounded-full bg-green-800 flex items-center justify-center text-white font-bold text-xl">
+                            م</div>
+                        <span class="ml-3 text-xl font-bold text-green-800">Al-Noor Mosque</span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-green-800 hover:text-green-600 font-medium">Home</a>
+                    <a href="#about" class="text-gray-600 hover:text-green-800 font-medium">About</a>
+                    <a href="#prayer-times" class="text-gray-600 hover:text-green-800 font-medium">Prayer Times</a>
+                    <a href="#donate" class="text-gray-600 hover:text-green-800 font-medium">Donate</a>
+                    <a href="#gallery" class="text-gray-600 hover:text-green-800 font-medium">Gallery</a>
+                    <a href="#notices" class="text-gray-600 hover:text-green-800 font-medium">Notices</a>
+                    <a href="#contact" class="text-gray-600 hover:text-green-800 font-medium">Contact</a>
+                    <button class="bg-green-800 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Donate
+                        Now</button>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-green-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-green-800">Home</a>
+                <a href="#about"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">About</a>
+                <a href="#prayer-times"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">Prayer
+                    Times</a>
+                <a href="#donate"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">Donate</a>
+                <a href="#gallery"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">Gallery</a>
+                <a href="#notices"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">Notices</a>
+                <a href="#contact"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-800">Contact</a>
+                <button
+                    class="w-full mt-2 bg-green-800 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Donate
+                    Now</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg pt-24 pb-32 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-right">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Welcome to <span class="text-yellow-300">Al-Noor
+                            Mosque</span></h1>
+                    <p class="text-xl mb-8 leading-relaxed">A center for spiritual growth, community service, and
+                        Islamic education. Join us in prayer, learning, and serving humanity.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="donate-btn bg-yellow-500 hover:bg-yellow-400 text-green-900 font-bold py-3 px-8 rounded-full text-lg">Donate
+                            Now</button>
+                        <button
+                            class="border-2 border-yellow-500 text-yellow-300 hover:bg-yellow-500 hover:text-green-900 font-bold py-3 px-8 rounded-full text-lg">Visit
+                            Us</button>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left"
+                    class="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-yellow-500/30">
+                    <h2 class="text-2xl font-bold mb-6 text-center">Today's Prayer Times</h2>
+                    <div class="space-y-4">
+                        <div class="prayer-card flex justify-between items-center bg-green-900/50 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                    <i data-lucide="sunrise" class="text-yellow-300 w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Fajr</h3>
+                                    <p class="text-sm text-gray-300">Dawn Prayer</p>
+                                </div>
+                            </div>
+                            <span class="text-xl font-bold">5:14 AM</span>
+                        </div>
+
+                        <div class="prayer-card flex justify-between items-center bg-green-900/50 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                    <i data-lucide="sun" class="text-yellow-300 w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Dhuhr</h3>
+                                    <p class="text-sm text-gray-300">Noon Prayer</p>
+                                </div>
+                            </div>
+                            <span class="text-xl font-bold">1:05 PM</span>
+                        </div>
+
+                        <div class="prayer-card flex justify-between items-center bg-green-900/50 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                    <i data-lucide="cloud" class="text-yellow-300 w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Asr</h3>
+                                    <p class="text-sm text-gray-300">Afternoon Prayer</p>
+                                </div>
+                            </div>
+                            <span class="text-xl font-bold">4:45 PM</span>
+                        </div>
+
+                        <div class="prayer-card flex justify-between items-center bg-green-900/50 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                    <i data-lucide="sunset" class="text-yellow-300 w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Maghrib</h3>
+                                    <p class="text-sm text-gray-300">Sunset Prayer</p>
+                                </div>
+                            </div>
+                            <span class="text-xl font-bold">6:32 PM</span>
+                        </div>
+
+                        <div class="prayer-card flex justify-between items-center bg-green-900/50 p-4 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                    <i data-lucide="moon" class="text-yellow-300 w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Isha</h3>
+                                    <p class="text-sm text-gray-300">Night Prayer</p>
+                                </div>
+                            </div>
+                            <span class="text-xl font-bold">8:15 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-yellow-300">Jumu'ah Prayer: 1:30 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monthly Donors & Collection Section - Responsive Version -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="text-center mb-10">
+                <h1 class="text-3xl md:text-4xl font-bold text-green-800 arabic">আল-নূর মসজিদ</h1>
+                <p class="text-yellow-500 mt-2 text-lg">Monthly Supporters & Contribution</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Monthly Donors Section -->
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200 shadow-sm">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-green-800 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Our Monthly Donors
+                        </h2>
+                        <p class="text-green-600">Regular supporters of our mosque</p>
+                        <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4 rounded-full"></div>
+                    </div>
+
+                    <div class="donor-scroll-container overflow-hidden relative rounded-lg border border-green-300 bg-white"
+                        style="height: 60vh;">
+                        <ul class="animate-scrollUp space-y-3 py-4">
+                            <!-- Donor list will be duplicated for continuous scrolling effect -->
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                মোঃ রাশেদুল ইসলাম
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ২,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                হাফেজ শামীম আহমেদ
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ১,৫০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                ড. আয়েশা সিদ্দিকা
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ৫,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                এডভোকেট ফারুক হোসেন
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                সাইফুল ইসলাম ও পরিবার
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ৩,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                নুসরাত জাহান
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                প্রকৌশলী আব্দুর রহিম
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ২,৫০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                মোঃ জাহাঙ্গীর আলম
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                হাসনা হেনা
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ১,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                ড. মাহমুদুল হাসান
+                            </li>
+
+                            <!-- Duplicated list for continuous scrolling -->
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                মোঃ রাশেদুল ইসলাম
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ২,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                হাফেজ শামীম আহমেদ
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ১,৫০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                ড. আয়েশা সিদ্দিকা
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ৫,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                এডভোকেট ফারুক হোসেন
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                সাইফুল ইসলাম ও পরিবার
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ৩,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                নুসরাত জাহান
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                প্রকৌশলী আব্দুর রহিম
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ২,৫০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                মোঃ জাহাঙ্গীর আলম
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                হাসনা হেনা
+                                <span class="block text-yellow-600 text-sm mt-1">৳ ১,০০০</span>
+                            </li>
+                            <li
+                                class="donor-card bg-white p-4 rounded-lg shadow text-center text-green-800 font-medium">
+                                ড. মাহমুদুল হাসান
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 text-center text-green-700">
+                        <p>We're grateful for our regular supporters. May Allah accept their contributions.</p>
+                    </div>
+                </div>
+
+                <!-- Last Month's Collection Section -->
+                <div
+                    class="bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-xl border border-green-200 shadow-sm">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-green-800 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Last Month's Collection
+                        </h2>
+                        <p class="text-green-600">Summary of donations received</p>
+                        <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4 rounded-full"></div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+                        <div class="text-center">
+                            <p class="text-green-700 text-lg arabic">মে ২০২৫</p>
+                            <p class="text-green-800 mt-1">মোট চাঁদা</p>
+                            <div class="mt-4">
+                                <span id="total-amount"
+                                    class="text-4xl md:text-5xl font-bold text-green-800 total-amount">০৳</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-xl font-bold text-green-800 text-center gold-border pb-4 mb-4">Breakdown of
+                            Donations</h3>
+
+                        <div class="mb-6">
+                            <canvas id="donationChart" height="200"></canvas>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 donation-breakdown">
+                            <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                                <div class="flex justify-between">
+                                    <span class="text-green-800 font-medium">Monthly Chanda</span>
+                                    <span class="text-yellow-600 font-bold">১৫,২০০৳</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 43%"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                                <div class="flex justify-between">
+                                    <span class="text-green-800 font-medium">Zakat</span>
+                                    <span class="text-yellow-600 font-bold">১০,০০০৳</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 28%"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                                <div class="flex justify-between">
+                                    <span class="text-green-800 font-medium">Fitrah</span>
+                                    <span class="text-yellow-600 font-bold">৮,০০০৳</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 23%"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                                <div class="flex justify-between">
+                                    <span class="text-green-800 font-medium">Mosque Fund</span>
+                                    <span class="text-yellow-600 font-bold">২,০০০৳</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 6%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <button
+                            class="bg-green-800 hover:bg-green-700 text-white py-3 px-8 rounded-full font-medium transition w-full md:w-auto">
+                            Become a Monthly Donor
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="bg-green-900 text-green-200 text-center py-6 arabic mt-10 rounded-xl">
+                <p class="text-lg">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</p>
+                <p class="mt-1">"My success is only by Allah" (Quran 11:88)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">About Our Mosque</h2>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+                <div data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-green-800 mb-4">Our History</h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed">Al-Noor Mosque was established in 1985 with a small
+                        group of dedicated community members. What began as a humble prayer space has grown into a
+                        vibrant Islamic center serving thousands of Muslims in our city.</p>
+                    <p class="text-gray-600 leading-relaxed">Over the years, we've expanded our facilities to include a
+                        full-time Islamic school, community hall, and library. Our mosque has become a cornerstone of
+                        the Muslim community, providing spiritual guidance and social services to all.</p>
+                </div>
+                <div data-aos="fade-left" class="bg-gray-100 rounded-xl overflow-hidden shadow-lg">
+                    <div class="aspect-w-16 aspect-h-9 bg-green-800/10 flex items-center justify-center">
+                        <div class="text-center p-8">
+                            <i data-lucide="mosque" class="w-16 h-16 text-green-800 mx-auto"></i>
+                            <h3 class="text-2xl font-bold text-green-800 mt-4">Al-Noor Mosque</h3>
+                            <p class="text-gray-600 mt-2">Serving the community since 1985</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-20" data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-green-800 mb-8 text-center">Our Vision & Mission</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-green-50 p-8 rounded-xl border border-green-200">
+                        <div class="text-green-800 mb-4">
+                            <i data-lucide="eye" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-green-800 mb-3">Our Vision</h4>
+                        <p class="text-gray-600">To be a beacon of Islamic values, fostering a compassionate and engaged
+                            Muslim community that contributes positively to society while maintaining strong faith and
+                            identity.</p>
+                    </div>
+
+                    <div class="bg-green-50 p-8 rounded-xl border border-green-200">
+                        <div class="text-green-800 mb-4">
+                            <i data-lucide="target" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-green-800 mb-3">Our Mission</h4>
+                        <p class="text-gray-600">To provide religious, educational, and social services that nurture
+                            spiritual growth, promote Islamic knowledge, build community bonds, and serve humanity
+                            regardless of faith or background.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-green-800 mb-8 text-center">Our Leadership</h3>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <!-- Imam -->
+                    <div
+                        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <div class="bg-green-800 h-40 flex items-center justify-center">
+                            <i data-lucide="user" class="w-16 h-16 text-yellow-300"></i>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-bold text-xl text-green-800">Imam Ahmed Hassan</h4>
+                            <p class="text-yellow-600 font-medium">Head Imam</p>
+                            <p class="text-gray-600 mt-2">Graduate of Al-Azhar University with 15 years of experience in
+                                Islamic scholarship.</p>
+                        </div>
+                    </div>
+
+                    <!-- Committee Members -->
+                    <div
+                        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <div class="bg-green-700 h-40 flex items-center justify-center">
+                            <i data-lucide="user" class="w-16 h-16 text-yellow-300"></i>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-bold text-xl text-green-800">Brother Yusuf Khan</h4>
+                            <p class="text-yellow-600 font-medium">Chairman</p>
+                            <p class="text-gray-600 mt-2">Community leader with a passion for youth development
+                                programs.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <div class="bg-green-600 h-40 flex items-center justify-center">
+                            <i data-lucide="user" class="w-16 h-16 text-yellow-300"></i>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-bold text-xl text-green-800">Sister Fatima Ali</h4>
+                            <p class="text-yellow-600 font-medium">Education Director</p>
+                            <p class="text-gray-600 mt-2">Oversees our weekend school and adult education programs.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <div class="bg-green-500 h-40 flex items-center justify-center">
+                            <i data-lucide="user" class="w-16 h-16 text-yellow-300"></i>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-bold text-xl text-green-800">Brother Malik Rahman</h4>
+                            <p class="text-yellow-600 font-medium">Treasurer</p>
+                            <p class="text-gray-600 mt-2">Manages mosque finances and donation programs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prayer Times Section -->
+    <section id="prayer-times" class="py-20 bg-green-50 islamic-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Prayer Times</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Accurate prayer times based on your location. All times are
+                    calculated for our local position.</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-16" data-aos="fade-up">
+                <div class="p-6 bg-green-800 text-white">
+                    <div class="flex flex-wrap items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">Daily Prayer Schedule</h3>
+                            <p id="current-date" class="mt-2">Wednesday, June 15, 2025</p>
+                        </div>
+                        <div class="flex items-center">
+                            <span id="current-time" class="text-2xl font-bold">12:45 PM</span>
+                            <div class="ml-4 px-3 py-1 bg-green-700 rounded-full text-sm" id="current-prayer">Dhuhr
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="py-3 px-4 text-left text-green-800">Prayer</th>
+                                    <th class="py-3 px-4 text-left text-green-800">Start Time</th>
+                                    <th class="py-3 px-4 text-left text-green-800">Iqamah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-4 px-4 font-medium">Fajr</td>
+                                    <td class="py-4 px-4">5:14 AM</td>
+                                    <td class="py-4 px-4">5:30 AM</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-4 px-4 font-medium">Sunrise</td>
+                                    <td class="py-4 px-4">6:32 AM</td>
+                                    <td class="py-4 px-4">-</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-4 px-4 font-medium">Dhuhr</td>
+                                    <td class="py-4 px-4">1:05 PM</td>
+                                    <td class="py-4 px-4">1:30 PM</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-4 px-4 font-medium">Asr</td>
+                                    <td class="py-4 px-4">4:45 PM</td>
+                                    <td class="py-4 px-4">5:00 PM</td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-4 px-4 font-medium">Maghrib</td>
+                                    <td class="py-4 px-4">6:32 PM</td>
+                                    <td class="py-4 px-4">6:37 PM</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-4 px-4 font-medium">Isha</td>
+                                    <td class="py-4 px-4">8:15 PM</td>
+                                    <td class="py-4 px-4">8:30 PM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-green-800 mb-4">Jumu'ah Prayer</h3>
+                    <p class="text-gray-600 mb-6">Join us every Friday for the congregational Jumu'ah prayer, followed
+                        by a community gathering.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i data-lucide="clock" class="text-green-800 w-5 h-5 mr-3"></i>
+                                <span>First Khutbah</span>
+                            </div>
+                            <span class="font-bold">1:00 PM</span>
+                        </div>
+
+                        <div class="flex justify-between items-center p-4 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i data-lucide="pray" class="text-green-800 w-5 h-5 mr-3"></i>
+                                <span>Jumu'ah Prayer</span>
+                            </div>
+                            <span class="font-bold">1:30 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h4 class="font-bold text-green-800 mb-2">This Week's Khutbah Topic:</h4>
+                        <p class="text-lg">"The Importance of Community in Islam" - by Imam Ahmed Hassan</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-md" data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-green-800 mb-4">Monthly Prayer Calendar</h3>
+                    <p class="text-gray-600 mb-6">Select a month to view the full prayer schedule</p>
+
+                    <div class="mb-6">
+                        <select
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                            <option>June 2025</option>
+                            <option>July 2025</option>
+                            <option>August 2025</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-green-800 text-red rounded-lg overflow-hidden">
+                        <div class="bg-green-900 p-4 text-center font-bold">June 2025</div>
+                        <div class="grid grid-cols-7 gap-px bg-gray-200">
+                            <div class="bg-white p-2 text-center text-sm font-medium">Sun</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Mon</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Tue</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Wed</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Thu</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Fri</div>
+                            <div class="bg-white p-2 text-center text-sm font-medium">Sat</div>
+
+                            <!-- Calendar days -->
+                            <div class="bg-white p-2 text-center text-gray-400">25</div>
+                            <div class="bg-white p-2 text-center text-gray-400">26</div>
+                            <div class="bg-white p-2 text-center text-gray-400">27</div>
+                            <div class="bg-white p-2 text-center text-gray-400">28</div>
+                            <div class="bg-white p-2 text-center text-gray-400">29</div>
+                            <div class="bg-white p-2 text-center text-gray-400">30</div>
+                            <div class="bg-white p-2 text-center">1</div>
+
+                            <!-- Continue with the rest of the days -->
+                            <div class="bg-white p-2 text-center">2</div>
+                            <div class="bg-white p-2 text-center">3</div>
+                            <div class="bg-white p-2 text-center">4</div>
+                            <div class="bg-white p-2 text-center">5</div>
+                            <div class="bg-white p-2 text-center">6</div>
+                            <div class="bg-white p-2 text-center">7</div>
+                            <div class="bg-white p-2 text-center">8</div>
+
+                            <div class="bg-white p-2 text-center">9</div>
+                            <div class="bg-white p-2 text-center">10</div>
+                            <div class="bg-white p-2 text-center">11</div>
+                            <div class="bg-white p-2 text-center">12</div>
+                            <div class="bg-white p-2 text-center">13</div>
+                            <div class="bg-white p-2 text-center">14</div>
+                            <div class="bg-white p-2 text-center bg-yellow-100 font-bold">15</div>
+
+                            <div class="bg-white p-2 text-center">16</div>
+                            <div class="bg-white p-2 text-center">17</div>
+                            <div class="bg-white p-2 text-center">18</div>
+                            <div class="bg-white p-2 text-center">19</div>
+                            <div class="bg-white p-2 text-center">20</div>
+                            <div class="bg-white p-2 text-center">21</div>
+                            <div class="bg-white p-2 text-center">22</div>
+
+                            <div class="bg-white p-2 text-center">23</div>
+                            <div class="bg-white p-2 text-center">24</div>
+                            <div class="bg-white p-2 text-center">25</div>
+                            <div class="bg-white p-2 text-center">26</div>
+                            <div class="bg-white p-2 text-center">27</div>
+                            <div class="bg-white p-2 text-center">28</div>
+                            <div class="bg-white p-2 text-center">29</div>
+
+                            <div class="bg-white p-2 text-center">30</div>
+                            <div class="bg-white p-2 text-center text-gray-400">1</div>
+                            <div class="bg-white p-2 text-center text-gray-400">2</div>
+                            <div class="bg-white p-2 text-center text-gray-400">3</div>
+                            <div class="bg-white p-2 text-center text-gray-400">4</div>
+                            <div class="bg-white p-2 text-center text-gray-400">5</div>
+                            <div class="bg-white p-2 text-center text-gray-400">6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Section -->
+    <section id="donate" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Support Our Mosque</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Your donations help us maintain our facilities, run
+                    educational programs, and serve the community</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-yellow-400 transition-all"
+                    data-aos="zoom-in">
+                    <div class="text-green-800 mb-4">
+                        <i data-lucide="calendar-days" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-800 mb-3">Monthly Chanda</h3>
+                    <p class="text-gray-600 mb-4">Regular monthly support that helps us plan ahead for community needs.
+                    </p>
+                    <button class="text-green-800 font-medium hover:text-green-600">Donate Monthly</button>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-yellow-400 transition-all"
+                    data-aos="zoom-in" data-aos-delay="100">
+                    <div class="text-green-800 mb-4">
+                        <i data-lucide="scatter-chart" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-800 mb-3">Zakat</h3>
+                    <p class="text-gray-600 mb-4">Fulfill your Zakat obligation to support those in need through our
+                        programs.</p>
+                    <button class="text-green-800 font-medium hover:text-green-600">Pay Zakat</button>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-yellow-400 transition-all"
+                    data-aos="zoom-in" data-aos-delay="200">
+                    <div class="text-green-800 mb-4">
+                        <i data-lucide="gift" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-800 mb-3">Fitrah</h3>
+                    <p class="text-gray-600 mb-4">Contribute your Fitrah to ensure everyone can celebrate Eid with joy.
+                    </p>
+                    <button class="text-green-800 font-medium hover:text-green-600">Give Fitrah</button>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200 hover:border-yellow-400 transition-all"
+                    data-aos="zoom-in" data-aos-delay="300">
+                    <div class="text-green-800 mb-4">
+                        <i data-lucide="building" class="w-10 h-10"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-800 mb-3">Mosque Fund</h3>
+                    <p class="text-gray-600 mb-4">Support the maintenance and development of our mosque facilities.</p>
+                    <button class="text-green-800 font-medium hover:text-green-600">Donate Now</button>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">Donation Methods</h3>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="smartphone" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-2">Mobile Banking</h4>
+                                <p class="text-gray-600">Send directly via mobile banking apps</p>
+                                <div class="mt-2">
+                                    <p class="font-medium">Bkash: <span class="font-normal">017XX-XXXXXX</span></p>
+                                    <p class="font-medium">Nagad: <span class="font-normal">018XX-XXXXXX</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="credit-card" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-2">Bank Transfer</h4>
+                                <p class="text-gray-600">Direct deposit to our bank account</p>
+                                <div class="mt-2">
+                                    <p class="font-medium">Bank: ABC Islamic Bank</p>
+                                    <p class="font-medium">Account: Al-Noor Mosque Foundation</p>
+                                    <p class="font-medium">Account #: 123-456-7890</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="hand" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-2">In Person</h4>
+                                <p class="text-gray-600">Visit the mosque office to make your donation</p>
+                                <p class="mt-2">Office Hours: 9:00 AM - 5:00 PM Daily</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">Become a Monthly Supporter</h3>
+                    <form class="bg-green-50 p-8 rounded-xl">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 mb-2">First Name</label>
+                                <input type="text"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">Last Name</label>
+                                <input type="text"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Email Address</label>
+                            <input type="email"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Monthly Donation Amount</label>
+                            <div class="grid grid-cols-4 gap-3">
+                                <button type="button"
+                                    class="bg-white border border-green-600 text-green-800 py-2 rounded-lg hover:bg-green-600 hover:text-white transition">$25</button>
+                                <button type="button"
+                                    class="bg-white border border-green-600 text-green-800 py-2 rounded-lg hover:bg-green-600 hover:text-white transition">$50</button>
+                                <button type="button"
+                                    class="bg-white border border-green-600 text-green-800 py-2 rounded-lg hover:bg-green-600 hover:text-white transition">$100</button>
+                                <input type="text" placeholder="Other"
+                                    class="col-span-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="donate-btn w-full bg-green-800 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-lg">Register
+                            as Monthly Supporter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-green-50 islamic-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Community Gallery</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Moments from our mosque activities, events, and community
+                    services</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="mb-10 flex justify-center">
+                <div class="inline-flex flex-wrap gap-2">
+                    <button class="px-4 py-2 bg-green-800 text-white rounded-full">All</button>
+                    <button
+                        class="px-4 py-2 bg-white text-green-800 rounded-full hover:bg-green-800 hover:text-white transition">Events</button>
+                    <button
+                        class="px-4 py-2 bg-white text-green-800 rounded-full hover:bg-green-800 hover:text-white transition">Iftar</button>
+                    <button
+                        class="px-4 py-2 bg-white text-green-800 rounded-full hover:bg-green-800 hover:text-white transition">Qiraat
+                        Class</button>
+                    <button
+                        class="px-4 py-2 bg-white text-green-800 rounded-full hover:bg-green-800 hover:text-white transition">Community
+                        Work</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Annual Community Iftar</h3>
+                        <p class="text-gray-600 text-sm">June 10, 2025</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Children's Quran Competition</h3>
+                        <p class="text-gray-600 text-sm">May 28, 2025</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Eid al-Fitr Celebration</h3>
+                        <p class="text-gray-600 text-sm">April 21, 2025</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Friday Khutbah</h3>
+                        <p class="text-gray-600 text-sm">June 14, 2025</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Community Cleanup Day</h3>
+                        <p class="text-gray-600 text-sm">May 15, 2025</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item rounded-xl overflow-hidden shadow-md" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 border-2 border-dashed rounded-xl w-full"></div>
+                    <div class="p-4 bg-white">
+                        <h3 class="font-bold text-green-800">Islamic Lecture Series</h3>
+                        <p class="text-gray-600 text-sm">April 30, 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notices Section -->
+    <section id="notices" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Announcements & Notices</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Stay updated with our latest news and events</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="bg-green-800 text-white p-4 rounded-t-xl mb-6">
+                <div class="flex items-center">
+                    <i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>
+                    <span class="font-bold">LATEST NEWS:</span>
+                    <div class="ml-4 overflow-hidden">
+                        <div class="news-ticker whitespace-nowrap inline-block">
+                            <span>Eid al-Adha prayer will be held at 8:00 AM on June 17 - </span>
+                            <span>Summer Quran classes registration now open - </span>
+                            <span>Community iftar every Friday during Ramadan - </span>
+                            <span>New youth program starting next month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-10">
+                <div data-aos="fade-right">
+                    <h3 class="text-xl font-bold text-green-800 mb-6">Upcoming Events</h3>
+                    <div class="space-y-6">
+                        <div class="flex border-b pb-6">
+                            <div class="bg-green-800 text-white text-center p-3 rounded-lg w-20">
+                                <div class="text-2xl font-bold">17</div>
+                                <div class="text-sm">June</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-green-800">Eid al-Adha Celebration</h4>
+                                <p class="text-gray-600 mb-2">Join us for Eid prayer and community gathering</p>
+                                <p class="text-sm"><i data-lucide="clock" class="w-4 h-4 inline mr-1"></i> 8:00 AM -
+                                    12:00 PM</p>
+                            </div>
+                        </div>
+
+                        <div class="flex border-b pb-6">
+                            <div class="bg-green-800 text-white text-center p-3 rounded-lg w-20">
+                                <div class="text-2xl font-bold">25</div>
+                                <div class="text-sm">June</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-green-800">Youth Leadership Workshop</h4>
+                                <p class="text-gray-600 mb-2">Developing leadership skills for young Muslims</p>
+                                <p class="text-sm"><i data-lucide="clock" class="w-4 h-4 inline mr-1"></i> 4:00 PM -
+                                    6:00 PM</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="bg-green-800 text-white text-center p-3 rounded-lg w-20">
+                                <div class="text-2xl font-bold">03</div>
+                                <div class="text-sm">July</div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-bold text-green-800">Summer Quran Classes Begin</h4>
+                                <p class="text-gray-600 mb-2">Registration now open for children and adults</p>
+                                <p class="text-sm"><i data-lucide="clock" class="w-4 h-4 inline mr-1"></i> 9:00 AM -
+                                    1:00 PM Daily</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <h3 class="text-xl font-bold text-green-800 mb-6">Recent Announcements</h3>
+                    <div class="bg-green-50 rounded-xl p-6">
+                        <div class="space-y-6">
+                            <div class="border-b pb-6">
+                                <h4 class="font-bold text-green-800 mb-2">Friday Prayer Change</h4>
+                                <p class="text-gray-600 mb-3">Starting next week, Jumu'ah prayer will begin at 1:30 PM
+                                    instead of 1:15 PM due to summer timing.</p>
+                                <p class="text-sm text-gray-500">Posted: June 12, 2025</p>
+                            </div>
+
+                            <div class="border-b pb-6">
+                                <h4 class="font-bold text-green-800 mb-2">Community Iftar Sponsorship</h4>
+                                <p class="text-gray-600 mb-3">Opportunity to sponsor community iftar during Ramadan.
+                                    Contact the office to participate.</p>
+                                <p class="text-sm text-gray-500">Posted: June 8, 2025</p>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-green-800 mb-2">New Imam Office Hours</h4>
+                                <p class="text-gray-600 mb-3">Imam Ahmed is now available for counseling on Tuesdays and
+                                    Thursdays from 3-5 PM.</p>
+                                <p class="text-sm text-gray-500">Posted: June 5, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button
+                    class="border-2 border-green-800 text-green-800 hover:bg-green-800 hover:text-white font-bold py-3 px-8 rounded-lg text-lg transition">View
+                    All Notices</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-green-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-4">Contact Us</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">We'd love to hear from you. Reach out for inquiries,
+                    feedback, or visit us.</p>
+                <div class="w-24 h-1 bg-yellow-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div data-aos="fade-right">
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">Get In Touch</h3>
+
+                    <div class="space-y-6 mb-10">
+                        <div class="flex">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="map-pin" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-1">Address</h4>
+                                <p class="text-gray-600">123 Peace Avenue, Green Valley,</p>
+                                <p class="text-gray-600">Dhaka 1212, Bangladesh</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="phone" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-1">Phone</h4>
+                                <p class="text-gray-600">+880 2XXXX-XXXXX</p>
+                                <p class="text-gray-600">+880 1XXXX-XXXXX (Emergency)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="mail" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-1">Email</h4>
+                                <p class="text-gray-600">info@alnoor-mosque.org</p>
+                                <p class="text-gray-600">support@alnoor-mosque.org</p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="bg-green-800 p-3 rounded-lg mr-4">
+                                <i data-lucide="clock" class="text-yellow-300 w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-green-800 mb-1">Office Hours</h4>
+                                <p class="text-gray-600">Saturday - Thursday: 9:00 AM - 5:00 PM</p>
+                                <p class="text-gray-600">Friday: 9:00 AM - 12:00 PM & 2:00 PM - 5:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover-glow bg-green-800 text-white p-3 rounded-full">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow bg-green-800 text-white p-3 rounded-full">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow bg-green-800 text-white p-3 rounded-full">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow bg-green-800 text-white p-3 rounded-full">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">Send a Message</h3>
+                    <form class="bg-white p-8 rounded-xl shadow-md">
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Full Name</label>
+                            <input type="text"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Email Address</label>
+                            <input type="email"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Subject</label>
+                            <select
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent">
+                                <option>General Inquiry</option>
+                                <option>Prayer Times</option>
+                                <option>Donation Question</option>
+                                <option>Event Information</option>
+                                <option>Volunteering</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2">Message</label>
+                            <textarea rows="4"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-transparent"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-green-800 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition">Send
+                            Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-green-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <div
+                            class="h-12 w-12 rounded-full bg-yellow-500 flex items-center justify-center text-green-900 font-bold text-xl">
+                            م</div>
+                        <span class="ml-3 text-xl font-bold text-yellow-300">Al-Noor Mosque</span>
+                    </div>
+                    <p class="text-green-200 mb-6">A beacon of faith, knowledge, and community service. Serving Muslims
+                        since 1985.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover-glow text-green-200 hover:text-yellow-300">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow text-green-200 hover:text-yellow-300">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow text-green-200 hover:text-yellow-300">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="hover-glow text-green-200 hover:text-yellow-300">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6 text-yellow-300">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-green-200 hover:text-yellow-300">Home</a></li>
+                        <li><a href="#about" class="text-green-200 hover:text-yellow-300">About Us</a></li>
+                        <li><a href="#prayer-times" class="text-green-200 hover:text-yellow-300">Prayer Times</a></li>
+                        <li><a href="#donate" class="text-green-200 hover:text-yellow-300">Donate</a></li>
+                        <li><a href="#gallery" class="text-green-200 hover:text-yellow-300">Gallery</a></li>
+                        <li><a href="#notices" class="text-green-200 hover:text-yellow-300">Announcements</a></li>
+                        <li><a href="#contact" class="text-green-200 hover:text-yellow-300">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6 text-yellow-300">Prayer Times</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between text-green-200">
+                            <span>Fajr</span>
+                            <span>5:14 AM</span>
+                        </li>
+                        <li class="flex justify-between text-green-200">
+                            <span>Dhuhr</span>
+                            <span>1:05 PM</span>
+                        </li>
+                        <li class="flex justify-between text-green-200">
+                            <span>Asr</span>
+                            <span>4:45 PM</span>
+                        </li>
+                        <li class="flex justify-between text-green-200">
+                            <span>Maghrib</span>
+                            <span>6:32 PM</span>
+                        </li>
+                        <li class="flex justify-between text-green-200">
+                            <span>Isha</span>
+                            <span>8:15 PM</span>
+                        </li>
+                        <li class="flex justify-between text-yellow-300 mt-4">
+                            <span class="font-bold">Jumu'ah</span>
+                            <span class="font-bold">1:30 PM</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6 text-yellow-300">Newsletter</h3>
+                    <p class="text-green-200 mb-4">Subscribe to receive updates on events and programs.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email"
+                            class="px-4 py-2 w-full rounded-l-lg focus:outline-none text-gray-800">
+                        <button class="bg-yellow-500 text-green-900 font-bold px-4 rounded-r-lg">Join</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="border-t border-green-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-green-400 text-center md:text-left mb-4 md:mb-0">
+                        <span class="arabic text-lg">وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ</span><br>
+                        "My success is only by Allah" (Quran 11:88)
+                    </p>
+                    <p class="text-green-400">© 2025 Al-Noor Mosque. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+
+        // Animated count-up for total donation amount
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = numberWithCommas(value) + '৳';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Format numbers with commas
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+
+        // Initialize AOS animations
+        document.addEventListener('DOMContentLoaded', function () {
+            AOS.init({
+                duration: 800,
+                once: true,
+                easing: 'ease-in-out'
+            });
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+
+            // Animate the total amount
+            const totalElement = document.getElementById('total-amount');
+            animateValue(totalElement, 0, 35200, 2000);
+
+            // Initialize the pie chart
+            const ctx = document.getElementById('donationChart').getContext('2d');
+            const donationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Monthly Chanda', 'Zakat', 'Fitrah', 'Mosque Fund'],
+                    datasets: [{
+                        data: [15200, 10000, 8000, 2000],
+                        backgroundColor: [
+                            '#0a5f38',
+                            '#0d7a4a',
+                            '#11965d',
+                            '#16b370'
+                        ],
+                        borderColor: '#f9fafb',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Nunito', sans-serif",
+                                    size: 12
+                                },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.label + ': ' + numberWithCommas(context.raw) + '৳';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+            // Update current date and time
+            function updateDateTime() {
+                const now = new Date();
+                const dateElement = document.getElementById('current-date');
+                const timeElement = document.getElementById('current-time');
+
+                // Format date
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateElement.textContent = now.toLocaleDateString('en-US', options);
+
+                // Format time
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                timeElement.textContent = `${hours}:${minutes} ${ampm}`;
+
+                // Determine current prayer (simplified)
+                const currentPrayer = document.getElementById('current-prayer');
+                const hour = now.getHours();
+
+                if (hour >= 5 && hour < 13) {
+                    currentPrayer.textContent = 'Dhuhr';
+                } else if (hour >= 13 && hour < 16) {
+                    currentPrayer.textContent = 'Asr';
+                } else if (hour >= 16 && hour < 19) {
+                    currentPrayer.textContent = 'Maghrib';
+                } else if (hour >= 19 || hour < 5) {
+                    currentPrayer.textContent = 'Isha';
+                } else {
+                    currentPrayer.textContent = 'Fajr';
+                }
+            }
+
+            // Initialize and update every minute
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+
+                        // Close mobile menu if open
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
