@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masjid Al-Iman - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a5632',
+                        secondary: '#2d8b5a',
+                        accent: '#e6f4ea',
+                        dark: '#0d301a'
+                    },
+                    fontFamily: {
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .count-up {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a5632;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        .prayer-card {
+            background: linear-gradient(135deg, #1a5632 0%, #2d8b5a 100%);
+            color: white;
+        }
+        .active-menu {
+            background-color: #e6f4ea;
+            border-left: 4px solid #1a5632;
+            color: #1a5632;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .announcement-card {
+            border-left: 4px solid #1a5632;
+        }
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex min-h-screen">
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuButton" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-white rounded-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div class="mobile-menu md:transform-none md:translate-x-0 fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg md:static md:w-64 sidebar">
+            <div class="flex items-center justify-center p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fas fa-mosque text-white text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold text-primary">Masjid Al-Iman</span>
+                </div>
+            </div>
+            
+            <nav class="mt-6">
+                <a href="#" data-page="dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent active-menu">
+                    <i class="fas fa-tachometer-alt mr-3"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" data-page="donors" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-users mr-3"></i>
+                    <span>Donor List</span>
+                </a>
+                <a href="#" data-page="prayer" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-clock mr-3"></i>
+                    <span>Prayer Time</span>
+                </a>
+                <a href="#" data-page="collection" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-coins mr-3"></i>
+                    <span>Monthly Collection</span>
+                </a>
+                <a href="#" data-page="announcements" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-bullhorn mr-3"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="#" data-page="gallery" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-images mr-3"></i>
+                    <span>Event Gallery</span>
+                </a>
+                <a href="#" data-page="messages" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-envelope mr-3"></i>
+                    <span>Contact Messages</span>
+                </a>
+                <a href="#" data-page="settings" class="flex items-center px-6 py-3 text-gray-700 hover:bg-accent">
+                    <i class="fas fa-cog mr-3"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="flex items-center px-6 py-3 text-gray-700 hover:bg-red-50 mt-4">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Topbar -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-4 py-4 sm:px-6">
+                    <div class="flex items-center">
+                        <div class="md:hidden mr-4">
+                            <h1 class="text-xl font-bold text-primary">Admin Dashboard</h1>
+                        </div>
+                        <div id="currentDateTime" class="text-gray-600 text-sm md:text-base"></div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 text-gray-600 hover:text-primary">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-3 right-28 md:right-36 h-2 w-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <div class="relative">
+                            <button id="profileDropdownButton" class="flex items-center space-x-2 focus:outline-none">
+                                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                                    <span class="text-white font-semibold">A</span>
+                                </div>
+                                <span class="text-gray-700 hidden md:inline">Admin</span>
+                                <i class="fas fa-chevron-down text-gray-500 text-xs"></i>
+                            </button>
+                            <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Profile</a>
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 border-t">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50">
+                <!-- Dashboard Page -->
+                <div id="dashboard" class="page-content">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
+                        <p class="text-gray-600">Welcome back, Admin. Here's what's happening today.</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-md p-6 stat-card">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-lg bg-green-100 text-primary mr-4">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Total Monthly Donors</p>
+                                    <h3 class="text-2xl font-bold count-up" id="donorCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-md p-6 stat-card">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-lg bg-blue-100 text-blue-600 mr-4">
+                                    <i class="fas fa-coins text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Last Month's Collection</p>
+                                    <h3 class="text-2xl font-bold"><span class="count-up" id="collectionAmount">0</span> ৳</h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-md p-6 stat-card">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-lg bg-red-100 text-red-600 mr-4">
+                                    <i class="fas fa-receipt text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Total Expenses</p>
+                                    <h3 class="text-2xl font-bold"><span class="count-up" id="expenseAmount">0</span> ৳</h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-md p-6 stat-card">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-lg bg-purple-100 text-purple-600 mr-4">
+                                    <i class="fas fa-bullhorn text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Total Announcements</p>
+                                    <h3 class="text-2xl font-bold count-up" id="announcementCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prayer Times Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-800">Today's Prayer Times</h2>
+                                <button class="text-primary hover:underline">View Full Schedule</button>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Fajr</h3>
+                                    <p class="text-2xl mt-2">4:45 AM</p>
+                                </div>
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Dhuhr</h3>
+                                    <p class="text-2xl mt-2">12:30 PM</p>
+                                </div>
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Asr</h3>
+                                    <p class="text-2xl mt-2">4:15 PM</p>
+                                </div>
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Maghrib</h3>
+                                    <p class="text-2xl mt-2">6:25 PM</p>
+                                </div>
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Isha</h3>
+                                    <p class="text-2xl mt-2">7:45 PM</p>
+                                </div>
+                                <div class="prayer-card rounded-lg p-4 text-center">
+                                    <h3 class="font-bold">Jummah</h3>
+                                    <p class="text-2xl mt-2">1:15 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Ramadan Countdown</h2>
+                            <div class="bg-gradient-to-r from-primary to-secondary rounded-xl p-6 text-center text-white">
+                                <p class="text-lg mb-2">Remaining until Ramadan</p>
+                                <div class="text-4xl font-bold mb-4">24 Days</div>
+                                <p class="text-sm">March 10, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Donors -->
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Recent Donors</h2>
+                            <button class="text-primary hover:underline">View All</button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                                        <span class="text-green-800 font-semibold">A</span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Ahmed Rahman</div>
+                                                    <div class="text-sm text-gray-500">ahmed@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">৳ 1,500</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Bank Transfer</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 15, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Completed
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                        <span class="text-blue-800 font-semibold">F</span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Fatima Begum</div>
+                                                    <div class="text-sm text-gray-500">fatima@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">৳ 2,000</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Mobile Banking</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 14, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Completed
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                                        <span class="text-yellow-800 font-semibold">K</span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Kamal Hossain</div>
+                                                    <div class="text-sm text-gray-500">kamal@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">৳ 1,000</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Cash</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 12, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Pending
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donor List Page -->
+                <div id="donors" class="page-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Donor Management</h1>
+                        <p class="text-gray-600">Manage mosque donors and donations</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                            <div class="mb-4 md:mb-0">
+                                <button id="addDonorBtn" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center">
+                                    <i class="fas fa-plus mr-2"></i> Add New Donor
+                                </button>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search donors..." class="border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-full">
+                                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                </div>
+                                <select class="border border-gray-300 rounded-lg px-4 py-2">
+                                    <option>All Status</option>
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serial</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Paid</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Abdul Karim</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            +880 1712 345678
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            ৳ 2,500
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            Bank Transfer
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 15, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Fatima Begum</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            +880 1812 345679
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            ৳ 1,500
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            Mobile Banking
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 14, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Mohammad Ali</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            +880 1912 345680
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            ৳ 3,000
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            Cash
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Pending
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            Jan 10, 2024
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6 mt-4">
+                            <div class="flex flex-1 justify-between sm:hidden">
+                                <a href="#" class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+                                <a href="#" class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+                            </div>
+                            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">24</span> results
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                            <span class="sr-only">Previous</span>
+                                            <i class="fas fa-chevron-left h-4 w-4"></i>
+                                        </a>
+                                        <a href="#" aria-current="page" class="relative z-10 inline-flex items-center bg-primary px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">1</a>
+                                        <a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">2</a>
+                                        <a href="#" class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">3</a>
+                                        <a href="#" class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                            <span class="sr-only">Next</span>
+                                            <i class="fas fa-chevron-right h-4 w-4"></i>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prayer Time Manager -->
+                <div id="prayer" class="page-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Prayer Time Management</h1>
+                        <p class="text-gray-600">Set and manage prayer times for the mosque</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h2 class="text-lg font-bold text-gray-800 mb-4">Calendar Settings</h2>
+                                <div class="flex items-center space-x-4 mb-6">
+                                    <div class="flex items-center">
+                                        <input id="gregorian" type="radio" name="calendar" class="h-4 w-4 text-primary focus:ring-primary" checked>
+                                        <label for="gregorian" class="ml-2 text-sm text-gray-700">Gregorian</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input id="hijri" type="radio" name="calendar" class="h-4 w-4 text-primary focus:ring-primary">
+                                        <label for="hijri" class="ml-2 text-sm text-gray-700">Hijri</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Current Month</label>
+                                    <select class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                        <option>January 2024</option>
+                                        <option>February 2024</option>
+                                        <option>March 2024</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 class="text-lg font-bold text-gray-800 mb-4">Notification Settings</h2>
+                                <div class="flex items-center mb-4">
+                                    <input id="notifications" type="checkbox" class="h-4 w-4 text-primary rounded focus:ring-primary" checked>
+                                    <label for="notifications" class="ml-2 text-sm text-gray-700">Enable prayer time notifications</label>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Notification Time Before Prayer</label>
+                                    <select class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                        <option>15 minutes</option>
+                                        <option>30 minutes</option>
+                                        <option>45 minutes</option>
+                                        <option>1 hour</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="text-lg font-bold text-gray-800 mb-4">Set Prayer Times</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prayer</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Iqamah Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Fajr</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="05:15">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="05:30">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Dhuhr</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="12:30">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="13:00">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Asr</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="15:45">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="16:00">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Maghrib</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="18:05">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="18:10">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Isha</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="19:30">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="19:45">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Jummah</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="13:00">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <input type="time" class="border border-gray-300 rounded px-2 py-1" value="13:30">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button class="text-green-600 hover:text-green-900"><i class="fas fa-save"></i> Save</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Page -->
+                <div id="gallery" class="page-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Event Gallery</h1>
+                        <p class="text-gray-600">Upload and manage mosque event photos</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-bold text-gray-800 mb-3">Upload Images</h2>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600 mb-2">Drag & drop images here or click to browse</p>
+                                <p class="text-sm text-gray-500 mb-4">Supports JPG, PNG up to 5MB each</p>
+                                <input type="file" multiple class="hidden" id="fileUpload">
+                                <button id="uploadBtn" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg">Select Files</button>
+                            </div>
+                        </div>
+
+                        <h2 class="text-lg font-bold text-gray-800 mb-4">Gallery (24 Photos)</h2>
+                        <div class="gallery-grid">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1519735777090-ec97162dc266?auto=format&fit=crop&w=300" alt="Mosque" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1560421683-6856ea585e78?auto=format&fit=crop&w=300" alt="Prayer" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1519735777090-ec97162dc266?auto=format&fit=crop&w=300" alt="Mosque" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1560421683-6856ea585e78?auto=format&fit=crop&w=300" alt="Prayer" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1519735777090-ec97162dc266?auto=format&fit=crop&w=300" alt="Mosque" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1560421683-6856ea585e78?auto=format&fit=crop&w=300" alt="Prayer" class="rounded-lg w-full h-40 object-cover">
+                                <button class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settings" class="page-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
+                        <p class="text-gray-600">Manage mosque and admin settings</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2">
+                                <h2 class="text-lg font-bold text-gray-800 mb-4">Admin Profile</h2>
+                                <div class="flex items-center mb-6">
+                                    <div class="mr-4">
+                                        <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
+                                            <span class="text-white text-2xl font-semibold">A</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="text-primary hover:underline">Change Profile Picture</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                        <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2" value="Abdullah Rahman">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2" value="admin@masjidaliman.com">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <input type="tel" class="w-full border border-gray-300 rounded-lg px-4 py-2" value="+880 1712 345678">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                    <input type="password" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="••••••••">
+                                </div>
+                                
+                                <button class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-lg">Update Profile</button>
+                            </div>
+                            
+                            <div class="border-l lg:pl-6">
+                                <h2 class="text-lg font-bold text-gray-800 mb-4">Mosque Information</h2>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Mosque Name</label>
+                                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2" value="Masjid Al-Iman">
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                    <textarea class="w-full border border-gray-300 rounded-lg px-4 py-2">123 Mosque Road, Dhaka, Bangladesh</textarea>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Contact Numbers</label>
+                                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-2" value="+880 2 9123456">
+                                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2" value="+880 1712 345678">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Footer Message</label>
+                                    <textarea class="w-full border border-gray-300 rounded-lg px-4 py-2">May Allah accept our prayers and good deeds. Ameen.</textarea>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Language</label>
+                                    <select class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                        <option>English</option>
+                                        <option>Bengali</option>
+                                        <option>Arabic</option>
+                                    </select>
+                                </div>
+                                
+                                <button class="bg-primary hover:bg-secondary text-white px-6 py-2 rounded-lg">Save Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Update current date and time
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                $('#currentDateTime').text(now.toLocaleDateString('en-US', options));
+            }
+            
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            // Profile dropdown toggle
+            $('#profileDropdownButton').click(function() {
+                $('#profileDropdown').toggle();
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).click(function(event) {
+                if (!$(event.target).closest('#profileDropdownButton, #profileDropdown').length) {
+                    $('#profileDropdown').hide();
+                }
+            });
+            
+            // Mobile menu toggle
+            $('#mobileMenuButton').click(function() {
+                $('.mobile-menu').toggleClass('open');
+            });
+            
+            // Page navigation
+            $('nav a[data-page]').click(function(e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                
+                // Update active menu item
+                $('nav a').removeClass('active-menu');
+                $(this).addClass('active-menu');
+                
+                // Show selected page
+                $('.page-content').addClass('hidden');
+                $(`#${page}`).removeClass('hidden');
+                
+                // Close mobile menu after selection
+                $('.mobile-menu').removeClass('open');
+            });
+            
+            // Count-up animation for stats
+            function animateValue(id, start, end, duration) {
+                const obj = document.getElementById(id);
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    obj.innerHTML = value.toLocaleString();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+            
+            // Initialize stats with animation
+            setTimeout(() => {
+                animateValue('donorCount', 0, 142, 2000);
+                animateValue('collectionAmount', 0, 245600, 2000);
+                animateValue('expenseAmount', 0, 186400, 2000);
+                animateValue('announcementCount', 0, 18, 2000);
+            }, 500);
+            
+            // File upload button
+            $('#uploadBtn').click(function() {
+                $('#fileUpload').click();
+            });
+            
+            // Add donor button
+            $('#addDonorBtn').click(function() {
+                alert('Add new donor form would open here');
+                // In a real implementation, this would show a modal with the form
+            });
+        });
+    </script>
+</body>
+</html>

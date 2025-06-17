@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosque Admin Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+.count-up {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a5632;
+        }
+        
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #065f46, #047857);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #047857, #065f46);
+            transform: translateY(-1px);
+        }
+
+        .notification-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(220, 38, 38, 0.9);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-delete {
+            opacity: 1;
+        }
+
+        .prayer-time-card {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-left: 4px solid #059669;
+        }
+
+        .announcement-card {
+            border-left: 4px solid #0891b2;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-card:hover {
+            border-left-color: #0e7490;
+            background-color: #f0f9ff;
+        }
+
+        .mobile-menu-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .ramadan-timer {
+            background: linear-gradient(135deg, #581c87, #7c3aed);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .timer-unit {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 0 4px;
+        }
+
+        .active-menu {
+            background: linear-gradient(135deg, #065f46, #047857);
+            color: white;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenuOverlay" class="fixed inset-0 z-40 mobile-menu-overlay hidden lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 sidebar-transition">
+        <div class="flex items-center justify-center h-16 bg-gradient-to-r from-green-800 to-green-700">
+            <i class="fas fa-mosque text-white text-2xl mr-3"></i>
+            <h1 class="text-white text-xl font-bold">Mosque Admin</h1>
+        </div>
+
+        <nav class="mt-8 px-4">
+            <ul class="space-y-2">
+                <li><a href="#" class="sidebar-link active-menu flex items-center px-4 py-3 rounded-lg"
+                        data-page="dashboard">
+                        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="donors">
+                        <i class="fas fa-users mr-3"></i> Donor List
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="prayer-times">
+                        <i class="fas fa-clock mr-3"></i> Prayer Times
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="collections">
+                        <i class="fas fa-chart-line mr-3"></i> Collections
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="announcements">
+                        <i class="fas fa-bullhorn mr-3"></i> Announcements
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="monthlyCollection">
+                        <i class="fas fa-coins mr-3"></i> Monthly Collection
+                    </a></li>
+
+
+
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="gallery">
+                        <i class="fas fa-images mr-3"></i> Gallery
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="messages">
+                        <i class="fas fa-envelope mr-3"></i> Messages
+                    </a></li>
+                <li><a href="#" class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-100"
+                        data-page="settings">
+                        <i class="fas fa-cog mr-3"></i> Settings
+                    </a></li>
+                <li><a href="#"
+                        class="sidebar-link flex items-center px-4 py-3 rounded-lg hover:bg-red-100 text-red-600"
+                        data-page="logout">
+                        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                    </a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center">
+                    <button id="mobileMenuBtn" class="lg:hidden mr-4 text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <h2 id="pageTitle" class="text-2xl font-semibold text-gray-800">Dashboard</h2>
+                        <p class="text-sm text-gray-600" id="currentDateTime"></p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="relative text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span
+                            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center notification-badge">3</span>
+                    </button>
+
+                    <div class="relative">
+                        <button id="profileBtn"
+                            class="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2 hover:bg-gray-200">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'/%3E%3C/svg%3E"
+                                alt="Admin" class="w-8 h-8 rounded-full bg-green-700 text-white p-1">
+                            <span class="text-sm font-medium">Admin</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+
+                        <div id="profileDropdown"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border hidden">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-6">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-content">
+                <!-- Ramadan Countdown -->
+                <div class="ramadan-timer mb-8">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-moon mr-2"></i>
+                        Ramadan Countdown 2025
+                    </h3>
+                    <div class="flex justify-center space-x-2" id="ramadanTimer">
+                        <div class="timer-unit">
+                            <div class="text-2xl font-bold" id="days">--</div>
+                            <div class="text-sm">Days</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="text-2xl font-bold" id="hours">--</div>
+                            <div class="text-sm">Hours</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="text-2xl font-bold" id="minutes">--</div>
+                            <div class="text-sm">Minutes</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="text-2xl font-bold" id="seconds">--</div>
+                            <div class="text-sm">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Donors</p>
+                                <p class="text-3xl font-bold count-up" data-count="248">0</p>
+                            </div>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-users text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Monthly Collection</p>
+                                <p class="text-3xl font-bold count-up" data-count="85000">৳0</p>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-hand-holding-usd text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Expenses</p>
+                                <p class="text-3xl font-bold count-up" data-count="32000">৳0</p>
+                            </div>
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <i class="fas fa-chart-line-down text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Announcements</p>
+                                <p class="text-3xl font-bold count-up" data-count="12">0</p>
+                            </div>
+                            <div class="bg-purple-100 p-3 rounded-full">
+                                <i class="fas fa-bullhorn text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prayer Times Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-gray-800">Today's Prayer Times</h2>
+                            <button class="text-primary hover:underline">View Full Schedule</button>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Fajr</h3>
+                                <p class="text-2xl mt-2">4:45 AM</p>
+                            </div>
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Dhuhr</h3>
+                                <p class="text-2xl mt-2">12:30 PM</p>
+                            </div>
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Asr</h3>
+                                <p class="text-2xl mt-2">4:15 PM</p>
+                            </div>
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Maghrib</h3>
+                                <p class="text-2xl mt-2">6:25 PM</p>
+                            </div>
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Isha</h3>
+                                <p class="text-2xl mt-2">7:45 PM</p>
+                            </div>
+                            <div class="prayer-card rounded-lg p-4 text-center">
+                                <h3 class="font-bold">Jummah</h3>
+                                <p class="text-2xl mt-2">1:15 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Ramadan Countdown</h2>
+                        <div class="bg-gradient-to-r from-primary to-secondary rounded-xl p-6 text-center text-white">
+                            <p class="text-lg mb-2">Remaining until Ramadan</p>
+                            <div class="text-4xl font-bold mb-4">24 Days</div>
+                            <p class="text-sm">March 10, 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">Monthly Collection Trend</h3>
+                        <canvas id="collectionChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-lg font-semibold mb-4">Today's Prayer Times</h3>
+                        <div class="space-y-3">
+                            <div class="prayer-time-card p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Fajr</span>
+                                    <span class="text-lg font-bold">5:15 AM</span>
+                                </div>
+                            </div>
+                            <div class="prayer-time-card p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Dhuhr</span>
+                                    <span class="text-lg font-bold">12:30 PM</span>
+                                </div>
+                            </div>
+                            <div class="prayer-time-card p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Asr</span>
+                                    <span class="text-lg font-bold">4:45 PM</span>
+                                </div>
+                            </div>
+                            <div class="prayer-time-card p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Maghrib</span>
+                                    <span class="text-lg font-bold">6:20 PM</span>
+                                </div>
+                            </div>
+                            <div class="prayer-time-card p-4 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Isha</span>
+                                    <span class="text-lg font-bold">7:45 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donors Page -->
+            <div id="donorsPage" class="page-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex flex-col lg:flex-row justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold mb-4 lg:mb-0">Donor Management</h3>
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                            <input type="text" id="donorSearch" placeholder="Search donors..."
+                                class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <select id="donorFilter"
+                                class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <button id="addDonorBtn" class="btn-primary text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Donor
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container overflow-x-auto">
+                        <table class="w-full table-auto">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Serial</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Name</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Phone</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Amount</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Method</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Status</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Last Paid</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="donorTableBody">
+                                <!-- Donor rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-6">
+                        <div class="text-sm text-gray-600">
+                            Showing <span id="donorShowingStart">1</span> to <span id="donorShowingEnd">10</span> of
+                            <span id="donorTotal">50</span> donors
+                        </div>
+                        <div class="flex space-x-2" id="donorPagination">
+                            <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                                data-page="prev">Previous</button>
+                            <button class="px-3 py-1 bg-green-600 text-white rounded" data-page="1">1</button>
+                            <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-page="2">2</button>
+                            <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-page="3">3</button>
+                            <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                                data-page="next">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prayer Times Page -->
+            <div id="prayer-timesPage" class="page-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-xl font-semibold mb-6">Prayer Time Manager</h3>
+
+                    <form id="prayerTimeForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Fajr</label>
+                            <input type="time" name="fajr" value="05:15"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dhuhr</label>
+                            <input type="time" name="dhuhr" value="12:30"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Asr</label>
+                            <input type="time" name="asr" value="16:45"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Maghrib</label>
+                            <input type="time" name="maghrib" value="18:20"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Isha</label>
+                            <input type="time" name="isha" value="19:45"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Jummah</label>
+                            <input type="time" name="jummah" value="13:00"
+                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <div class="md:col-span-2 lg:col-span-3">
+                            <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-save mr-2"></i>Save Prayer Times
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Collections Page -->
+            <div id="collectionsPage" class="page-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-xl font-semibold mb-6">Monthly Collections</h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <canvas id="monthlyChart" width="400" height="300"></canvas>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800">This Month</h4>
+                                <p class="text-2xl font-bold text-green-600">৳85,000</p>
+                                <p class="text-sm text-green-700">↗ 12% from last month</p>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-800">Last Month</h4>
+                                <p class="text-2xl font-bold text-blue-600">৳76,000</p>
+                            </div>
+
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-purple-800">Average Monthly</h4>
+                                <p class="text-2xl font-bold text-purple-600">৳72,500</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements Page -->
+            <div id="announcementsPage" class="page-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold">Announcements</h3>
+                            <button id="addAnnouncementBtn" class="btn-primary text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-plus mr-2"></i>Add Announcement
+                            </button>
+                        </div>
+
+                        <div id="announcementsList" class="space-y-4">
+                            <!-- Announcements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Page -->
+            <div id="galleryPage" class="page-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold">Event Gallery</h3>
+                        <label for="galleryUpload" class="btn-primary text-white px-6 py-2 rounded-lg cursor-pointer">
+                            <i class="fas fa-upload mr-2"></i>Upload Images
+                            <input type="file" id="galleryUpload" multiple accept="image/*" class="hidden">
+                        </label>
+                    </div>
+
+                    <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Gallery items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Page -->
+            <div id="messagesPage" class="page-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-xl font-semibold mb-6">Contact Messages</h3>
+
+                    <div class="table-container overflow-x-auto">
+                        <table class="w-full table-auto">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Name</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Email</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Subject</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Date</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Status</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="messagesTableBody">
+                                <!-- Messages will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-xl font-semibold mb-6">Mosque Settings</h3>
+
+                        <form id="settingsForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mosque Name</label>
+                                    <input type="text" name="mosqueName" value="Central Mosque"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Phone</label>
+                                    <input type="tel" name="contactPhone" value="+880-1234-567890"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                    <input type="email" name="email" value="info@centralmosque.org"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                    <input type="text" name="address" value="123 Main Street, Dhaka"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Message</label>
+                                <textarea name="footerMessage" rows="3"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">May Allah bless this community and guide us all.</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Default Language</label>
+                                <select name="language"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="en">English</option>
+                                    <option value="bn">বাংলা</option>
+                                    <option value="ar">العربية</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-save mr-2"></i>Save Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Donor Modal -->
+    <div id="donorModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold" id="donorModalTitle">Add New Donor</h3>
+                    <button id="closeDonorModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="donorForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                        <input type="text" name="name" required
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                        <input type="tel" name="phone" required
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" name="email"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Monthly Amount (৳) *</label>
+                        <input type="number" name="amount" required min="1"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                        <select name="paymentMethod"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="mobile">Mobile Banking</option>
+                            <option value="card">Card</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input type="date" name="startDate"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="submit" class="flex-1 btn-primary text-white py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Save Donor
+                        </button>
+                        <button type="button" id="resetDonorForm"
+                            class="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">
+                            <i class="fas fa-undo mr-2"></i>Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Announcement Modal -->
+    <div id="announcementModal"
+        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Add New Announcement</h3>
+                    <button id="closeAnnouncementModal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="announcementForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                        <input type="text" name="title" required
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                        <input type="date" name="date" required
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select name="category"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option value="general">General</option>
+                            <option value="prayer">Prayer Times</option>
+                            <option value="event">Event</option>
+                            <option value="fundraising">Fundraising</option>
+                            <option value="ramadan">Ramadan</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                        <textarea name="description" required rows="4"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="submit" class="flex-1 btn-primary text-white py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Save Announcement
+                        </button>
+                        <button type="button" id="resetAnnouncementForm"
+                            class="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">
+                            <i class="fas fa-undo mr-2"></i>Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentPage = 'dashboard';
+        let donors = [];
+        let announcements = [];
+        let messages = [];
+        let galleryImages = [];
+
+        // Initialize the dashboard
+        $(document).ready(function () {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+
+            initializeRamadanCountdown();
+            setInterval(initializeRamadanCountdown, 1000);
+
+            animateCounters();
+            initializeCharts();
+            loadSampleData();
+
+            // Event listeners
+            setupEventListeners();
+
+            // Initialize forms
+            initializeForms();
+        });
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            $('#currentDateTime').text(now.toLocaleDateString('en-US', options));
+        }
+
+        // Ramadan countdown timer
+        function initializeRamadanCountdown() {
+            // Ramadan 2025 starts approximately March 1, 2025
+            const ramadanDate = new Date('2025-03-01T00:00:00');
+            const now = new Date();
+            const difference = ramadanDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                $('#days').text(days);
+                $('#hours').text(hours);
+                $('#minutes').text(minutes);
+                $('#seconds').text(seconds);
+            } else {
+                $('#ramadanTimer').html('<div class="text-center"><h4 class="text-xl font-bold">Ramadan Mubarak!</h4></div>');
+            }
+        }
+
+        // Animate counter numbers
+        function animateCounters() {
+            $('.count-up').each(function () {
+                const $this = $(this);
+                const countTo = parseInt($this.attr('data-count'));
+                const prefix = $this.text().includes('৳') ? '৳' : '';
+
+                $({ countNum: 0 }).animate({
+                    countNum: countTo
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function () {
+                        $this.text(prefix + Math.floor(this.countNum).toLocaleString());
+                    },
+                    complete: function () {
+                        $this.text(prefix + countTo.toLocaleString());
+                    }
+                });
+            });
+        }
+
+        // // Initialize charts
+        function initializeCharts() {
+            // Collection trend chart
+            const ctx1 = document.getElementById('collectionChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Collection (৳)',
+                        data: [6500, 7000, 6800, 8500, 7800, 8500],
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '৳' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Monthly collections chart
+            const ctx2 = document.getElementById('monthlyChart');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Regular Donations', 'Special Collections', 'Zakat', 'Others'],
+                        datasets: [{
+                            data: [45000, 20000, 15000, 5000],
+                            backgroundColor: ['#059669', '#0891b2', '#7c3aed', '#dc2626']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Load sample data
+        function loadSampleData() {
+            // Sample donors data
+            donors = [
+                { id: 1, name: 'Mohammed Rahman', phone: '+880-1712-345678', email: 'rahman@email.com', amount: 2000, paymentMethod: 'bank', status: 'active', lastPaid: '2024-06-15', startDate: '2024-01-01' },
+                { id: 2, name: 'Fatima Ahmed', phone: '+880-1723-456789', email: 'fatima@email.com', amount: 1500, paymentMethod: 'mobile', status: 'active', lastPaid: '2024-06-14', startDate: '2024-02-01' },
+                { id: 3, name: 'Abdul Karim', phone: '+880-1734-567890', email: 'karim@email.com', amount: 3000, paymentMethod: 'cash', status: 'inactive', lastPaid: '2024-05-20', startDate: '2024-01-15' },
+                { id: 4, name: 'Aisha Khan', phone: '+880-1745-678901', email: 'aisha@email.com', amount: 2500, paymentMethod: 'card', status: 'active', lastPaid: '2024-06-16', startDate: '2024-03-01' },
+                { id: 5, name: 'Omar Hassan', phone: '+880-1756-789012', email: 'omar@email.com', amount: 1000, paymentMethod: 'mobile', status: 'active', lastPaid: '2024-06-13', startDate: '2024-04-01' }
+            ];
+
+            // Sample announcements
+            announcements = [
+                { id: 1, title: 'Ramadan Schedule 2025', date: '2024-06-15', category: 'ramadan', description: 'Special prayer times and iftar arrangements for the holy month of Ramadan.' },
+                { id: 2, title: 'Fundraising for New Wing', date: '2024-06-10', category: 'fundraising', description: 'We are raising funds for the construction of a new wing to accommodate more worshippers.' },
+                { id: 3, title: 'Weekly Quran Study Circle', date: '2024-06-08', category: 'event', description: 'Join us every Friday evening for Quran study and discussion.' }
+            ];
+
+            // Sample messages
+            messages = [
+                { id: 1, name: 'Ahmed Ali', email: 'ahmed@email.com', subject: 'Prayer Time Inquiry', message: 'Could you please confirm the Friday prayer time?', date: '2024-06-16', status: 'unread' },
+                { id: 2, name: 'Sarah Ahmed', email: 'sarah@email.com', subject: 'Donation Question', message: 'I would like to know about monthly donation options.', date: '2024-06-15', status: 'read' },
+                { id: 3, name: 'Ibrahim Khan', email: 'ibrahim@email.com', subject: 'Event Participation', message: 'How can I participate in the upcoming community event?', date: '2024-06-14', status: 'unread' }
+            ];
+
+            renderDonorTable();
+            renderAnnouncements();
+            renderMessages();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            $('#mobileMenuBtn').click(function () {
+                $('#sidebar').removeClass('-translate-x-full');
+                $('#mobileMenuOverlay').removeClass('hidden');
+            });
+
+            $('#mobileMenuOverlay').click(function () {
+                $('#sidebar').addClass('-translate-x-full');
+                $('#mobileMenuOverlay').addClass('hidden');
+            });
+
+            // Sidebar navigation
+            $('.sidebar-link').click(function (e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+
+                if (page === 'logout') {
+                    if (confirm('Are you sure you want to logout?')) {
+                        alert('Logged out successfully!');
+                    }
+                    return;
+                }
+
+                switchPage(page);
+
+                // Update active menu
+                $('.sidebar-link').removeClass('active-menu');
+                $(this).addClass('active-menu');
+
+                // Close mobile menu
+                $('#sidebar').addClass('-translate-x-full');
+                $('#mobileMenuOverlay').addClass('hidden');
+            });
+
+            // Profile dropdown
+            $('#profileBtn').click(function (e) {
+                e.stopPropagation();
+                $('#profileDropdown').toggleClass('hidden');
+            });
+
+            $(document).click(function () {
+                $('#profileDropdown').addClass('hidden');
+            });
+
+            // Modal handlers
+            $('#addDonorBtn').click(() => openDonorModal());
+            $('#closeDonorModal').click(() => closeDonorModal());
+            $('#addAnnouncementBtn').click(() => openAnnouncementModal());
+            $('#closeAnnouncementModal').click(() => closeAnnouncementModal());
+
+            // Form reset buttons
+            $('#resetDonorForm').click(() => $('#donorForm')[0].reset());
+            $('#resetAnnouncementForm').click(() => $('#announcementForm')[0].reset());
+
+            // Search and filter
+            $('#donorSearch').on('input', function () {
+                renderDonorTable($(this).val(), $('#donorFilter').val());
+            });
+
+            $('#donorFilter').change(function () {
+                renderDonorTable($('#donorSearch').val(), $(this).val());
+            });
+
+            // Gallery upload
+            $('#galleryUpload').change(function (e) {
+                handleGalleryUpload(e.target.files);
+            });
+        }
+
+        // Initialize forms with validation
+        function initializeForms() {
+            // Donor form validation
+            $('#donorForm').validate({
+                rules: {
+                    name: { required: true, minlength: 2 },
+                    phone: { required: true, minlength: 10 },
+                    email: { email: true },
+                    amount: { required: true, min: 1 }
+                },
+                messages: {
+                    name: { required: 'Please enter donor name', minlength: 'Name must be at least 2 characters' },
+                    phone: { required: 'Please enter phone number', minlength: 'Phone number must be at least 10 digits' },
+                    email: { email: 'Please enter a valid email address' },
+                    amount: { required: 'Please enter donation amount', min: 'Amount must be greater than 0' }
+                },
+                submitHandler: function (form) {
+                    saveDonor(form);
+                }
+            });
+
+            // Announcement form validation
+            $('#announcementForm').validate({
+                rules: {
+                    title: { required: true, minlength: 3 },
+                    date: { required: true },
+                    description: { required: true, minlength: 10 }
+                },
+                messages: {
+                    title: { required: 'Please enter announcement title', minlength: 'Title must be at least 3 characters' },
+                    date: { required: 'Please select a date' },
+                    description: { required: 'Please enter description', minlength: 'Description must be at least 10 characters' }
+                },
+                submitHandler: function (form) {
+                    saveAnnouncement(form);
+                }
+            });
+
+            // Prayer time form
+            $('#prayerTimeForm').submit(function (e) {
+                e.preventDefault();
+                savePrayerTimes(this);
+            });
+
+            // Settings form
+            $('#settingsForm').submit(function (e) {
+                e.preventDefault();
+                saveSettings(this);
+            });
+        }
+
+        // Switch pages
+        function switchPage(page) {
+            currentPage = page;
+
+            // Hide all pages
+            $('.page-content').addClass('hidden');
+
+            // Show selected page
+            $(`#${page}Page`).removeClass('hidden');
+
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'donors': 'Donor Management',
+                'prayer-times': 'Prayer Times',
+                'collections': 'Collections',
+                'announcements': 'Announcements',
+                'gallery': 'Gallery',
+                'messages': 'Messages',
+                'settings': 'Settings'
+            };
+
+            $('#pageTitle').text(titles[page] || 'Dashboard');
+        }
+
+        // Donor management functions
+        function openDonorModal(donorId = null) {
+            $('#donorModal').removeClass('hidden');
+
+            if (donorId) {
+                const donor = donors.find(d => d.id === donorId);
+                if (donor) {
+                    $('#donorModalTitle').text('Edit Donor');
+                    $('input[name="name"]').val(donor.name);
+                    $('input[name="phone"]').val(donor.phone);
+                    $('input[name="email"]').val(donor.email);
+                    $('input[name="amount"]').val(donor.amount);
+                    $('select[name="paymentMethod"]').val(donor.paymentMethod);
+                    $('input[name="startDate"]').val(donor.startDate);
+                    $('#donorForm').data('editing', donorId);
+                }
+            } else {
+                $('#donorModalTitle').text('Add New Donor');
+                $('#donorForm')[0].reset();
+                $('#donorForm').removeData('editing');
+            }
+        }
+
+        function closeDonorModal() {
+            $('#donorModal').addClass('hidden');
+            $('#donorForm')[0].reset();
+            $('#donorForm').removeData('editing');
+        }
+
+        function saveDonor(form) {
+            const formData = new FormData(form);
+            const donorData = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                amount: parseInt(formData.get('amount')),
+                paymentMethod: formData.get('paymentMethod'),
+                startDate: formData.get('startDate'),
+                status: 'active',
+                lastPaid: new Date().toISOString().split('T')[0]
+            };
+
+            const editingId = $(form).data('editing');
+
+            if (editingId) {
+                // Update existing donor
+                const index = donors.findIndex(d => d.id === editingId);
+                if (index !== -1) {
+                    donors[index] = { ...donors[index], ...donorData };
+                }
+            } else {
+                // Add new donor
+                donorData.id = Date.now();
+                donors.push(donorData);
+            }
+
+            renderDonorTable();
+            closeDonorModal();
+
+            // Show success message
+            showNotification('Donor saved successfully!', 'success');
+        }
+
+        function deleteDonor(donorId) {
+            if (confirm('Are you sure you want to delete this donor?')) {
+                donors = donors.filter(d => d.id !== donorId);
+                renderDonorTable();
+                showNotification('Donor deleted successfully!', 'success');
+            }
+        }
+
+        function renderDonorTable(searchTerm = '', statusFilter = '') {
+            let filteredDonors = donors;
+
+            // Apply search filter
+            if (searchTerm) {
+                filteredDonors = filteredDonors.filter(donor =>
+                    donor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    donor.phone.includes(searchTerm) ||
+                    donor.email.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            // Apply status filter
+            if (statusFilter) {
+                filteredDonors = filteredDonors.filter(donor => donor.status === statusFilter);
+            }
+
+            const tbody = $('#donorTableBody');
+            tbody.empty();
+
+            filteredDonors.forEach((donor, index) => {
+                const row = `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-3">${index + 1}</td>
+                        <td class="px-4 py-3 font-medium">${donor.name}</td>
+                        <td class="px-4 py-3">${donor.phone}</td>
+                        <td class="px-4 py-3">৳${donor.amount.toLocaleString()}</td>
+                        <td class="px-4 py-3 capitalize">${donor.paymentMethod}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs rounded-full ${donor.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                ${donor.status}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">${donor.lastPaid}</td>
+                        <td class="px-4 py-3">
+                            <button onclick="openDonorModal(${donor.id})" class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteDonor(${donor.id})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+
+            // Update pagination info
+            $('#donorTotal').text(filteredDonors.length);
+            $('#donorShowingStart').text(filteredDonors.length > 0 ? 1 : 0);
+            $('#donorShowingEnd').text(Math.min(10, filteredDonors.length));
+        }
+
+        // Announcement management
+        function openAnnouncementModal() {
+            $('#announcementModal').removeClass('hidden');
+            $('#announcementForm')[0].reset();
+            $('input[name="date"]').val(new Date().toISOString().split('T')[0]);
+        }
+
+        function closeAnnouncementModal() {
+            $('#announcementModal').addClass('hidden');
+            $('#announcementForm')[0].reset();
+        }
+
+        function saveAnnouncement(form) {
+            const formData = new FormData(form);
+            const announcementData = {
+                id: Date.now(),
+                title: formData.get('title'),
+                date: formData.get('date'),
+                category: formData.get('category'),
+                description: formData.get('description')
+            };
+
+            announcements.unshift(announcementData);
+            renderAnnouncements();
+            closeAnnouncementModal();
+
+            showNotification('Announcement saved successfully!', 'success');
+        }
+
+        function deleteAnnouncement(announcementId) {
+            if (confirm('Are you sure you want to delete this announcement?')) {
+                announcements = announcements.filter(a => a.id !== announcementId);
+                renderAnnouncements();
+                showNotification('Announcement deleted successfully!', 'success');
+            }
+        }
+
+        function renderAnnouncements() {
+            const container = $('#announcementsList');
+            container.empty();
+
+            announcements.forEach(announcement => {
+                const categoryColors = {
+                    'general': 'bg-gray-100 text-gray-800 border-gray-500',
+                    'prayer': 'bg-green-100 text-green-800 border-green-500',
+                    'event': 'bg-blue-100 text-blue-800 border-blue-500',
+                    'fundraising': 'bg-purple-100 text-purple-800 border-purple-500',
+                    'ramadan': 'bg-yellow-100 text-yellow-800 border-yellow-500'
+                };
+
+                const categoryClass = categoryColors[announcement.category] || categoryColors['general'];
+
+                const card = `
+                    <div class="announcement-card p-4 rounded-lg border-l-4 ${categoryClass}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-semibold text-lg">${announcement.title}</h4>
+                                <p class="text-gray-600 mt-2">${announcement.description}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="deleteAnnouncement(${announcement.id})" 
+                                        class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-100">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-xs px-2 py-1 rounded-full bg-white border border-gray-300 capitalize">
+                                ${announcement.category}
+                            </span>
+                            <span class="text-xs text-gray-500">
+                                <i class="far fa-calendar mr-1"></i>${announcement.date}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.append(card);
+            });
+        }
+
+        // Messages management
+        function renderMessages() {
+            const tbody = $('#messagesTableBody');
+            tbody.empty();
+
+            messages.forEach((message, index) => {
+                const row = `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium">${message.name}</td>
+                        <td class="px-4 py-3">${message.email}</td>
+                        <td class="px-4 py-3">${message.subject}</td>
+                        <td class="px-4 py-3">${message.date}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs rounded-full ${message.status === 'unread' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}">
+                                ${message.status}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <button onclick="viewMessage(${message.id})" class="text-green-600 hover:text-green-800 mr-2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="deleteMessage(${message.id})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function viewMessage(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            if (message) {
+                // Update status to read
+                message.status = 'read';
+                renderMessages();
+
+                // Show message content in modal
+                alert(`Message from: ${message.name}\nEmail: ${message.email}\nSubject: ${message.subject}\n\n${message.message}`);
+            }
+        }
+
+        function deleteMessage(messageId) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                messages = messages.filter(m => m.id !== messageId);
+                renderMessages();
+                showNotification('Message deleted successfully!', 'success');
+            }
+        }
+
+        // Gallery management
+        function handleGalleryUpload(files) {
+            if (files.length === 0) return;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    galleryImages.push({
+                        id: Date.now() + i,
+                        name: file.name,
+                        url: e.target.result,
+                        date: new Date().toISOString().split('T')[0]
+                    });
+
+                    renderGallery();
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            showNotification('Images uploaded successfully!', 'success');
+        }
+
+        function renderGallery() {
+            const container = $('#galleryGrid');
+            container.empty();
+
+            galleryImages.forEach(image => {
+                const item = `
+                    <div class="gallery-item relative">
+                        <div class="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="${image.url}" alt="${image.name}" class="object-cover w-full h-full">
+                        </div>
+                        <div class="gallery-delete cursor-pointer" onclick="deleteGalleryImage(${image.id})">
+                            <i class="fas fa-trash text-white"></i>
+                        </div>
+                        <div class="p-2">
+                            <p class="text-sm font-medium truncate">${image.name}</p>
+                            <p class="text-xs text-gray-500">${image.date}</p>
+                        </div>
+                    </div>
+                `;
+                container.append(item);
+            });
+        }
+
+        function deleteGalleryImage(imageId) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                galleryImages = galleryImages.filter(img => img.id !== imageId);
+                renderGallery();
+                showNotification('Image deleted successfully!', 'success');
+            }
+        }
+
+        // Form submission handlers
+        function savePrayerTimes(form) {
+            const formData = new FormData(form);
+            const prayerTimes = {
+                fajr: formData.get('fajr'),
+                dhuhr: formData.get('dhuhr'),
+                asr: formData.get('asr'),
+                maghrib: formData.get('maghrib'),
+                isha: formData.get('isha'),
+                jummah: formData.get('jummah')
+            };
+
+            // In a real app, you would save to database here
+            localStorage.setItem('prayerTimes', JSON.stringify(prayerTimes));
+            showNotification('Prayer times saved successfully!', 'success');
+        }
+
+        function saveSettings(form) {
+            const formData = new FormData(form);
+            const settings = {
+                mosqueName: formData.get('mosqueName'),
+                contactPhone: formData.get('contactPhone'),
+                email: formData.get('email'),
+                address: formData.get('address'),
+                footerMessage: formData.get('footerMessage'),
+                language: formData.get('language')
+            };
+
+            // In a real app, you would save to database here
+            localStorage.setItem('mosqueSettings', JSON.stringify(settings));
+            showNotification('Settings saved successfully!', 'success');
+        }
+
+        // Utility function to show notifications
+        function showNotification(message, type = 'success') {
+            alert(`${type.toUpperCase()}: ${message}`);
+        }
+    </script>
+</body>
+
+</html>
